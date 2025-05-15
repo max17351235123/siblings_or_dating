@@ -1,1 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Siblings or Dating Classification Model</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+    line-height: 1.6;
+    color: #222;
+    background-color: #f7f9fc;
+  }
+  h1, h2 {
+    color: #0056b3;
+  }
+  a {
+    color: #0056b3;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  section {
+    margin-bottom: 40px;
+  }
+  footer {
+    margin-top: 60px;
+    font-size: 0.9em;
+    color: #666;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
 
+<h1>Siblings or Dating Classification Model</h1>
+<p><em>By Max Votaw</em></p>
+
+<section id="problem">
+  <h2>1. Problem</h2>
+  <p>Determining whether two people are siblings or dating based on a single photograph is difficult. Real-world clues like social interactions are absent, and siblings can appear very intimate while couples might look similar. This ambiguity inspired internet memes and social media accounts challenging users to decide if two individuals are siblings or dating.</p>
+</section>
+
+<section id="data">
+  <h2>2. Data Collection & Preprocessing</h2>
+  <p>Data was collected primarily from two sources: the subreddit <code>r/siblingsordating</code> and the Instagram account <code>@siblingsordating</code>. Reddit posts were labeled by parsing obfuscated text in comments, while Instagram images were labeled using OCR and fuzzy text matching. Images were resized to 224x224 pixels, converted to RGB, and face detection was used to align both faces in each photo. Pose estimation features were extracted and combined with image data for model input. The dataset was split into training (70%), validation (15%), and test (15%) sets.</p>
+</section>
+
+<section id="model">
+  <h2>3. Model Architecture & Training</h2>
+  <p>A Convolutional Neural Network (CNN) was used to analyze images by extracting facial features. MediaPipe’s pose estimation model provided body keypoints, which were combined with image features for classification. Face detection and feature extraction were done using MTCNN and InceptionResnetV1.</p>
+  <pre><code>mtcnn = MTCNN(image_size=160, margin=20, keep_all=False, post_process=True, device=device)
+facenet = InceptionResnetV1(pretrained='vggface2').eval().to(device)
+mp_pose = mp.solutions.pose
+pose_model = mp_pose.Pose(static_image_mode=True, min_detection_confidence=0.5)
+  </code></pre>
+</section>
+
+<section id="results">
+  <h2>4. Evaluation & Results</h2>
+  <p>The model was evaluated using accuracy, precision, recall, and F1-score to measure overall correctness and balance between false positives and false negatives.</p>
+  <pre><code>acc = accuracy_score(all_labels, all_preds)
+precision, recall, f1, _ = precision_recall_fscore_support(all_labels, all_preds, average='weighted')
+print(f"Accuracy: {acc:.4f}")
+print(f"Precision: {precision:.4f}")
+print(f"Recall: {recall:.4f}")
+print(f"F1-score: {f1:.4f}")
+  </code></pre>
+  <p>Final test evaluation:</p>
+  <ul>
+    <li>Accuracy: 71.4%</li>
+    <li>Precision: 70.9%</li>
+    <li>Recall: 71.4%</li>
+    <li>F1-score: 70.2%</li>
+  </ul>
+  <p>Though the model performed well, some overfitting was observed with validation accuracy plateauing near 60%. Human accuracy on the same task was about 75%, suggesting the model is close to the Bayes error rate.</p>
+</section>
+
+<section id="future">
+  <h2>5. Future Goals</h2>
+  <p>To reduce overfitting and improve accuracy, future work includes expanding the dataset with less ambiguous images and applying more data augmentation techniques such as filters and tilting images.</p>
+</section>
+
+<section id="links">
+  <h2>Project Links</h2>
+  <ul>
+    <li><a href="YOUR_NOTEBOOK_LINK" target="_blank" rel="noopener">Project Notebook</a></li>
+    <li><a href="YOUR_VIDEO_LINK" target="_blank" rel="noopener">Project Video</a></li>
+    <li><a href="YOUR_REPORT_LINK" target="_blank" rel="noopener">Executive Report</a></li>
+  </ul>
+</section>
+
+<footer>
+  <p>© 2025 Max Votaw</p>
+</footer>
+
+</body>
+</html>
